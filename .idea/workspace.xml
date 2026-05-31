@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6cb56919-a024-4753-bdbf-d014559467e5" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="2.0510182940088137" />
+      <entry key="MS500" value="4.455563089609937" />
+      <entry key="S2" value="8.87477049840734" />
+      <entry key="S5" value="13.171930628349536" />
+      <entry key="S10" value="15.888882140441277" />
+      <entry key="S30" value="18.42202019592951" />
+      <entry key="S60" value="19.1806539779748" />
+      <entry key="M2" value="19.582456904256915" />
+      <entry key="M5" value="19.941338124374145" />
+      <entry key="M10" value="21.184861948576298" />
+      <entry key="M15" value="22.946978032331746" />
+      <entry key="M30" value="27.35052490957933" />
+      <entry key="H1" value="31.757987966456696" />
+      <entry key="H2" value="35.33021549251583" />
+      <entry key="H4" value="41.228544986082866" />
+      <entry key="D1" value="88.19602587870871" />
+      <entry key="W1" value="121.34791732114657" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.3024328998816872E-11" />
+      <entry key="MS500" value="0.006783541313595725" />
+      <entry key="S2" value="0.3926843060582076" />
+      <entry key="S5" value="1.0149302120545576" />
+      <entry key="S10" value="1.4179710577540108" />
+      <entry key="S30" value="1.7814733270712955" />
+      <entry key="S60" value="1.887324827409821" />
+      <entry key="M2" value="1.9427808733536411" />
+      <entry key="M5" value="1.9768970058259698" />
+      <entry key="M10" value="1.9884122929002805" />
+      <entry key="M15" value="1.9922667914242096" />
+      <entry key="M30" value="1.996129354480209" />
+      <entry key="H1" value="1.9980636658097726" />
+      <entry key="H2" value="1.9990315799068668" />
+      <entry key="H4" value="1.9995157266863632" />
+      <entry key="D1" value="1.9999192789924773" />
+      <entry key="W1" value="1.999988468212247" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.95991706531202" />
+      <entry key="MS500" value="4.408569595051894" />
+      <entry key="S2" value="9.128505598112834" />
+      <entry key="S5" value="14.049765225219186" />
+      <entry key="S10" value="17.2105912158319" />
+      <entry key="S30" value="20.162792934355263" />
+      <entry key="S60" value="21.046350248155036" />
+      <entry key="M2" value="21.514086491567532" />
+      <entry key="M5" value="21.913675310128266" />
+      <entry key="M10" value="23.170871542486406" />
+      <entry key="M15" value="24.93751340371482" />
+      <entry key="M30" value="29.345609583681995" />
+      <entry key="H1" value="33.755433513848416" />
+      <entry key="H2" value="37.32889706373265" />
+      <entry key="H4" value="43.22785833089785" />
+      <entry key="D1" value="90.19588539011711" />
+      <entry key="W1" value="123.3478946880282" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3E0TDcBZl9XottNHVOnp4FefpsB" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.LinkedInEmailExtractorApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PendingEmailSenderApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kbmah/IdeaProjects/linkedin_email_extractor/templates/body&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\templates\body" />
+      <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\templates\signatures" />
+      <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\resume" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\templates\body" />
+      <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\templates\signatures" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="linkedin_email_extractor" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="linkedin_email_extractor" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6cb56919-a024-4753-bdbf-d014559467e5" name="Changes" comment="" />
+      <created>1779314369757</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779314369757</updated>
+      <workItem from="1779314371014" duration="4698000" />
+      <workItem from="1779348820695" duration="727000" />
+      <workItem from="1779349583816" duration="740000" />
+      <workItem from="1779372698589" duration="9340000" />
+      <workItem from="1779386045924" duration="4942000" />
+      <workItem from="1779460710834" duration="4005000" />
+      <workItem from="1779477478722" duration="2192000" />
+      <workItem from="1779519853746" duration="121000" />
+      <workItem from="1779807980443" duration="21127000" />
+      <workItem from="1779968697359" duration="7738000" />
+      <workItem from="1779990224344" duration="7872000" />
+      <workItem from="1780083893181" duration="5703000" />
+      <workItem from="1780173503505" duration="3011000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.configurationType" implementationName="PythonConfigurationType" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/linkedin_email_extractor$main.coverage" NAME="main Coverage Results" MODIFIED="1779332790237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

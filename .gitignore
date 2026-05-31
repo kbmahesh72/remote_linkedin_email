@@ -1,0 +1,7 @@
+target/
+automation-output/
+playwright-profile/
+.codex-video-tools/
+*.log
+application.properties
+config/email-accounts.csv
