@@ -4,69 +4,85 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6cb56919-a024-4753-bdbf-d014559467e5" name="Changes" comment="" />
+    <list default="true" id="6cb56919-a024-4753-bdbf-d014559467e5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailExtractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailSender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/LinkedInEmailExtractorApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/LinkedInEmailExtractorApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/PendingEmailSenderApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/PendingEmailSenderApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/kbmah/linkedin/LinkedInEmailExtractorApplicationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/kbmah/linkedin/LinkedInEmailExtractorApplicationTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="2.0510182940088137" />
-      <entry key="MS500" value="4.455563089609937" />
-      <entry key="S2" value="8.87477049840734" />
-      <entry key="S5" value="13.171930628349536" />
-      <entry key="S10" value="15.888882140441277" />
-      <entry key="S30" value="18.42202019592951" />
-      <entry key="S60" value="19.1806539779748" />
-      <entry key="M2" value="19.582456904256915" />
-      <entry key="M5" value="19.941338124374145" />
-      <entry key="M10" value="21.184861948576298" />
-      <entry key="M15" value="22.946978032331746" />
-      <entry key="M30" value="27.35052490957933" />
-      <entry key="H1" value="31.757987966456696" />
-      <entry key="H2" value="35.33021549251583" />
-      <entry key="H4" value="41.228544986082866" />
-      <entry key="D1" value="88.19602587870871" />
-      <entry key="W1" value="121.34791732114657" />
+      <entry key="MS100" value="1.0000000007409011" />
+      <entry key="MS500" value="1.0149262958809755" />
+      <entry key="S2" value="1.3495328608319261" />
+      <entry key="S5" value="1.656742625191293" />
+      <entry key="S10" value="1.8103965851305723" />
+      <entry key="S30" value="1.9323218608494652" />
+      <entry key="S60" value="1.9655917782339825" />
+      <entry key="M2" value="1.9895062904968697" />
+      <entry key="M5" value="2.19998343680003" />
+      <entry key="M10" value="2.653933447401452" />
+      <entry key="M15" value="2.995455185531325" />
+      <entry key="M30" value="3.6121517902752682" />
+      <entry key="H1" value="4.147923462702261" />
+      <entry key="H2" value="4.527534894584551" />
+      <entry key="H4" value="5.284949140668574" />
+      <entry key="D1" value="47.76830287738995" />
+      <entry key="W1" value="114.43789880339641" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.3024328998816872E-11" />
-      <entry key="MS500" value="0.006783541313595725" />
-      <entry key="S2" value="0.3926843060582076" />
-      <entry key="S5" value="1.0149302120545576" />
-      <entry key="S10" value="1.4179710577540108" />
-      <entry key="S30" value="1.7814733270712955" />
-      <entry key="S60" value="1.887324827409821" />
-      <entry key="M2" value="1.9427808733536411" />
-      <entry key="M5" value="1.9768970058259698" />
-      <entry key="M10" value="1.9884122929002805" />
-      <entry key="M15" value="1.9922667914242096" />
-      <entry key="M30" value="1.996129354480209" />
-      <entry key="H1" value="1.9980636658097726" />
-      <entry key="H2" value="1.9990315799068668" />
-      <entry key="H4" value="1.9995157266863632" />
-      <entry key="D1" value="1.9999192789924773" />
-      <entry key="W1" value="1.999988468212247" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="1.99525429948863E-226" />
+      <entry key="M5" value="7.954517068810773E-91" />
+      <entry key="M10" value="1.2613085120794018E-45" />
+      <entry key="M15" value="1.470812867593301E-30" />
+      <entry key="M30" value="1.7151165738226288E-15" />
+      <entry key="H1" value="5.856819011230577E-8" />
+      <entry key="H2" value="3.422519219098071E-4" />
+      <entry key="H4" value="0.026163024302325866" />
+      <entry key="D1" value="0.9708220989694253" />
+      <entry key="W1" value="1.8038005633881358" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.95991706531202" />
-      <entry key="MS500" value="4.408569595051894" />
-      <entry key="S2" value="9.128505598112834" />
-      <entry key="S5" value="14.049765225219186" />
-      <entry key="S10" value="17.2105912158319" />
-      <entry key="S30" value="20.162792934355263" />
-      <entry key="S60" value="21.046350248155036" />
-      <entry key="M2" value="21.514086491567532" />
-      <entry key="M5" value="21.913675310128266" />
-      <entry key="M10" value="23.170871542486406" />
-      <entry key="M15" value="24.93751340371482" />
-      <entry key="M30" value="29.345609583681995" />
-      <entry key="H1" value="33.755433513848416" />
-      <entry key="H2" value="37.32889706373265" />
-      <entry key="H4" value="43.22785833089785" />
-      <entry key="D1" value="90.19588539011711" />
-      <entry key="W1" value="123.3478946880282" />
+      <entry key="MS100" value="0.8827029967563162" />
+      <entry key="MS500" value="0.9889578140791438" />
+      <entry key="S2" value="1.335291157511154" />
+      <entry key="S5" value="1.648178708618496" />
+      <entry key="S10" value="1.8053948723074018" />
+      <entry key="S30" value="1.9304639145382558" />
+      <entry key="S60" value="1.9646367765019623" />
+      <entry key="M2" value="1.989021418535713" />
+      <entry key="M5" value="2.1997797804150157" />
+      <entry key="M10" value="2.6538222501787967" />
+      <entry key="M15" value="2.995376423062168" />
+      <entry key="M30" value="3.612108265361901" />
+      <entry key="H1" value="4.14789997159446" />
+      <entry key="H2" value="4.52786469092865" />
+      <entry key="H4" value="5.311103133230185" />
+      <entry key="D1" value="48.739094870432375" />
+      <entry key="W1" value="116.24168919754833" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -78,33 +94,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.LinkedInEmailExtractorApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.PendingEmailSenderApplication.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/kbmah/IdeaProjects/linkedin_email_extractor/templates/body&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.LinkedInEmailExtractorApplication.executor": "Run",
+    "Application.PendingEmailSenderApplication.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/kbmah/IdeaProjects/linkedin_email_extractor/templates/body",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\kbmah\IdeaProjects\linkedin_email_extractor\templates\body" />

@@ -22,16 +22,26 @@ Run it as a Java application:
 java -jar target\linkedin-email-extractor-1.0.0.jar
 ```
 
-By default, the automation reads `application.properties`, runs every 10 seconds, writes to `automation-output\YYYYMMDD.xlsx`, and sends pending emails from the daily workbook.
+All runtime settings live in the root-level `application.properties`. By default, the automation writes to
+`automation-output\YYYYMMDD.xlsx` and sends pending emails from the daily workbook.
 Duplicate emails are skipped within the same daily workbook, and the automation keeps running.
+
+Configure separate LinkedIn searches as a comma-separated ordered list:
+
+```properties
+queries=Hiring Java C2C Remote,Hiring Java W2 Remote
+```
+
+Each query runs in its own browser session. After every search finishes and its browser closes, the combined
+results are saved to Excel before email sending starts.
 
 Optional arguments:
 
 ```powershell
-java -jar target\linkedin-email-extractor-1.0.0.jar --query "c2c Java" --max-scrolls 30 --scroll-pause 2.5 --max-emails 25 --output-dir reports --interval-minutes 5
+java -jar target\linkedin-email-extractor-1.0.0.jar --query '"Hiring Java C2C" OR "Hiring Java W2"' --max-scrolls 30 --scroll-pause 2.5 --max-emails 25 --output-dir reports --interval-minutes 5
 ```
 
-To use a custom config file:
+To use a different complete config file:
 
 ```powershell
 java -jar target\linkedin-email-extractor-1.0.0.jar --config application.properties
@@ -77,7 +87,16 @@ email.accounts.file=config/email-accounts.csv
 subject.template.path=templates/subjects/default.txt
 subject.variants.path=
 body.template.path=templates/body/default.txt
+smtp.auth=true
+smtp.starttls.enable=true
+smtp.host=smtp.gmail.com
+smtp.port=587
 ```
+
+The same file also controls the search query, blocked post keywords, Chromium headless mode and viewport,
+LinkedIn URLs, scrolling, browser waits/timeouts, scheduling, output paths, template directories, and
+credential environment-variable names. Keep passwords in the configured environment variables rather than
+committing them to a properties file.
 
 Put Gmail senders and template paths in `config/email-accounts.csv`:
 
@@ -87,7 +106,7 @@ id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subject
 2,sender02@gmail.com,app password,cc@example.com,resume/Sender02_Resume.docx,GC - ,sender02@gmail.com.txt,sender02@gmail.com.variants.txt,sender02@gmail.com.txt
 ```
 
-For 50 Gmail accounts, use numeric ids `1`, `2`, `3`, etc. Pending workbook rows are sent round-robin across all configured accounts. Each row owns its sender Gmail, app password, optional CC email, resume attachment path, subject prefix, subject file, subject variants file, and body file. Leave `ccEmail` blank to send without CC. Subject files live under `templates/subjects/`, and body files live under `templates/body/`; if `subjectPath`, `subjectVariantsPath`, or `bodyPath` is just a filename, the app looks in those folders automatically. App passwords can also be supplied as environment variables named `GMAIL_APP_PASSWORD_<ID>`, for example `GMAIL_APP_PASSWORD_1`.
+For 50 Gmail accounts, use numeric ids `1`, `2`, `3`, etc. Pending workbook rows are sent round-robin across all configured accounts. Each row owns its sender Gmail, app password, optional CC email, resume attachment path, subject prefix, subject file, subject variants file, and body file. Leave `ccEmail` blank to send without CC. Subject files live under `templates/subjects/`, and body files live under `templates/body/`; if `subjectPath`, `subjectVariantsPath`, or `bodyPath` is just a filename, the app looks in those folders automatically. App passwords can also be supplied as environment variables using `gmail.account-password-env-prefix`, for example `GMAIL_APP_PASSWORD_1`.
 
 Use Gmail addresses as subject/body filenames, for example `templates/subjects/surya.p2805@gmail.com.txt` and `templates/body/surya.p2805@gmail.com.txt`. To prepend `GC - ` for Surya, set `subjectPrefix` to `GC - ` in that CSV row.
 

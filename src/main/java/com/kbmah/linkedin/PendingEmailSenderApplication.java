@@ -53,8 +53,12 @@ public final class PendingEmailSenderApplication {
 
     static int sendPendingEmailsForToday(AppConfig config, Path outputDir) throws Exception {
         Path workbookPath = ExcelLeadRepository.outputPathForToday(outputDir);
+        return sendPendingEmails(config, workbookPath);
+    }
+
+    static int sendPendingEmails(AppConfig config, Path workbookPath) throws Exception {
         if (!Files.exists(workbookPath)) {
-            LOGGER.info("Today's workbook does not exist yet: {}", workbookPath);
+            LOGGER.info("Workbook does not exist yet: {}", workbookPath);
             return 0;
         }
 

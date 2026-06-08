@@ -29,12 +29,7 @@ final class EmailExtractor {
             "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
             Pattern.CASE_INSENSITIVE
     );
-    private static final Pattern BLOCKED_POST_KEYWORDS = Pattern.compile("\\b(?:Sales|Bench)\\b", Pattern.CASE_INSENSITIVE);
-
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailExtractor.class);
-    private static final String LINKEDIN_HOME = "https://www.linkedin.com/";
-    private static final String LINKEDIN_LOGIN = "https://www.linkedin.com/login";
-    private static final String SEARCH_URL_TEMPLATE = "https://www.linkedin.com/search/results/content/?keywords=%s";
 
     static String extractFirstName(String email) {
         String localPart = email.split("@", 2)[0].trim();
@@ -49,7 +44,11 @@ final class EmailExtractor {
     }
 
     static List<Lead> extractLeads(String postText, String query) {
-        if (hasBlockedKeyword(postText)) {
+        return extractLeads(postText, query, AppConfig.defaultBrowserConfig().blockedPostKeywords());
+    }
+
+    static List<Lead> extractLeads(String postText, String query, Pattern blockedPostKeywords) {
+        if (hasBlockedKeyword(postText, blockedPostKeywords)) {
             return List.of();
         }
 
@@ -69,8 +68,8 @@ final class EmailExtractor {
                 .toList();
     }
 
-    private static boolean hasBlockedKeyword(String postText) {
-        return postText != null && BLOCKED_POST_KEYWORDS.matcher(postText).find();
+    private static boolean hasBlockedKeyword(String postText, Pattern blockedPostKeywords) {
+        return postText != null && blockedPostKeywords.matcher(postText).find();
     }
 
     static String buildSubject(String postText, String query) {
@@ -111,24 +110,30 @@ final class EmailExtractor {
     }
 
     List<Lead> collect(AppConfig config, Path profileDir) {
+        List<Lead> collectedLeads;
         try (Playwright playwright = Playwright.create()) {
             BrowserType.LaunchPersistentContextOptions launchOptions =
                     new BrowserType.LaunchPersistentContextOptions()
-                            .setHeadless(false)
-                            .setViewportSize(1440, 960);
+                            .setHeadless(config.browserConfig().headless())
+                            .setViewportSize(
+                                    config.browserConfig().viewportWidth(),
+                                    config.browserConfig().viewportHeight()
+                            );
 
             BrowserContext context = playwright.chromium().launchPersistentContext(profileDir, launchOptions);
             try {
                 Page page = context.pages().isEmpty() ? context.newPage() : context.pages().get(0);
-                ensureLogin(page, config.loginTimeoutSeconds());
-                searchPosts(page, config.query());
-                applyLatestSort(page);
-                return collectLeadsFromFeed(config, page);
+                ensureLogin(page, config);
+                searchPosts(page, config);
+                applyLatestSort(page, config.browserConfig());
+                collectedLeads = collectLeadsFromFeed(config, page);
             } finally {
                 closeQuietly(context);
                 ChromiumProcessCleaner.closeProcessesForProfile(profileDir);
             }
         }
+        LOGGER.info("LinkedIn browser closed after extracting {} emails.", collectedLeads.size());
+        return collectedLeads;
     }
 
     private static void closeQuietly(BrowserContext context) {
@@ -162,18 +167,18 @@ final class EmailExtractor {
             LOGGER.info("Scroll {}/{}: scanning {} visible post cards.", scroll + 1, config.maxScrolls(), articleCount);
 
             for (int idx = 0; idx < articleCount; idx++) {
-                collectArticleLeads(page, articles.nth(idx), config.query(), processedPosts, leadsByPostAndEmail);
+                collectArticleLeads(page, articles.nth(idx), config, processedPosts, leadsByPostAndEmail);
                 if (leadsByPostAndEmail.size() >= config.maxEmails()) {
                     return sortedLeads(leadsByPostAndEmail);
                 }
             }
 
             unchangedRounds = processedPosts.size() == processedBeforeRound ? unchangedRounds + 1 : 0;
-            if (unchangedRounds >= 3) {
+            if (unchangedRounds >= config.browserConfig().maxUnchangedScrollRounds()) {
                 break;
             }
 
-            page.mouse().wheel(0, 2200);
+            page.mouse().wheel(0, config.browserConfig().scrollPixels());
             page.waitForTimeout(config.scrollPauseSeconds() * 1000);
         }
 
@@ -183,29 +188,36 @@ final class EmailExtractor {
     private static void collectArticleLeads(
             Page page,
             Locator article,
-            String query,
+            AppConfig config,
             Set<String> processedPosts,
             Map<String, Lead> leadsByPostAndEmail
     ) {
         try {
-            article.scrollIntoViewIfNeeded(new Locator.ScrollIntoViewIfNeededOptions().setTimeout(3000));
-            page.waitForTimeout(500);
+            article.scrollIntoViewIfNeeded(new Locator.ScrollIntoViewIfNeededOptions()
+                    .setTimeout(config.browserConfig().operationTimeoutMillis()));
+            page.waitForTimeout(config.browserConfig().postSettleMillis());
         } catch (Exception exception) {
             return;
         }
 
-        String fingerprint = articleFingerprint(article);
+        String fingerprint = articleFingerprint(article, config.browserConfig());
         if (fingerprint.isEmpty() || processedPosts.contains(fingerprint)) {
             return;
         }
 
-        expandPostContent(page, article);
+        expandPostContent(page, article, config.browserConfig());
         try {
             String postText = EmailExtractor.normalizeWhitespace(
-                    article.innerText(new Locator.InnerTextOptions().setTimeout(3000))
+                    article.innerText(new Locator.InnerTextOptions()
+                            .setTimeout(config.browserConfig().operationTimeoutMillis()))
             );
             if (!postText.isEmpty()) {
-                addLeadMatches(postText, query, leadsByPostAndEmail);
+                addLeadMatches(
+                        postText,
+                        config.query(),
+                        config.browserConfig().blockedPostKeywords(),
+                        leadsByPostAndEmail
+                );
             }
         } catch (Exception exception) {
             LOGGER.debug("Could not read post text.", exception);
@@ -214,8 +226,13 @@ final class EmailExtractor {
         }
     }
 
-    private static void addLeadMatches(String postText, String query, Map<String, Lead> leadsByPostAndEmail) {
-        for (Lead lead : EmailExtractor.extractLeads(postText, query)) {
+    private static void addLeadMatches(
+            String postText,
+            String query,
+            Pattern blockedPostKeywords,
+            Map<String, Lead> leadsByPostAndEmail
+    ) {
+        for (Lead lead : EmailExtractor.extractLeads(postText, query, blockedPostKeywords)) {
             leadsByPostAndEmail.putIfAbsent(ExcelLeadRepository.postEmailKey(lead.subject(), lead.email()), lead);
         }
     }
@@ -226,7 +243,7 @@ final class EmailExtractor {
                 .toList();
     }
 
-    private static boolean isLoginPage(Page page) {
+    private static boolean isLoginPage(Page page, AppConfig.BrowserConfig browserConfig) {
         String currentUrl = page.url().toLowerCase(Locale.ROOT);
         if (currentUrl.contains("login") || currentUrl.contains("checkpoint") || currentUrl.contains("/uas/")) {
             return true;
@@ -240,7 +257,9 @@ final class EmailExtractor {
         )) {
             try {
                 Locator locator = page.locator(selector).first();
-                if (locator.count() > 0 && locator.isVisible(new Locator.IsVisibleOptions().setTimeout(1000))) {
+                if (locator.count() > 0 && locator.isVisible(
+                        new Locator.IsVisibleOptions().setTimeout(browserConfig.operationTimeoutMillis())
+                )) {
                     return true;
                 }
             } catch (Exception ignored) {
@@ -249,17 +268,17 @@ final class EmailExtractor {
         return false;
     }
 
-    private static boolean attemptCredentialLogin(Page page) {
-        String email = System.getenv().getOrDefault("LINKEDIN_EMAIL", "").trim();
-        String password = System.getenv().getOrDefault("LINKEDIN_PASSWORD", "");
+    private static boolean attemptCredentialLogin(Page page, AppConfig.BrowserConfig browserConfig) {
+        String email = System.getenv().getOrDefault(browserConfig.linkedinEmailEnvVar(), "").trim();
+        String password = System.getenv().getOrDefault(browserConfig.linkedinPasswordEnvVar(), "");
         if (email.isEmpty() || password.isEmpty()) {
             return false;
         }
 
         try {
             if (!page.url().toLowerCase(Locale.ROOT).contains("linkedin.com/login")) {
-                navigate(page, LINKEDIN_LOGIN);
-                page.waitForTimeout(2000);
+                navigate(page, browserConfig.linkedinLoginUrl());
+                page.waitForTimeout(browserConfig.uiSettleMillis());
             }
 
             Locator emailInput = page.locator("input[name='session_key'], input#username").first();
@@ -268,11 +287,11 @@ final class EmailExtractor {
                 return false;
             }
 
-            emailInput.fill(email, new Locator.FillOptions().setTimeout(5000));
-            passwordInput.fill(password, new Locator.FillOptions().setTimeout(5000));
-            submitLogin(page, passwordInput);
-            page.waitForTimeout(6000);
-            return !isLoginPage(page);
+            emailInput.fill(email, new Locator.FillOptions().setTimeout(browserConfig.operationTimeoutMillis()));
+            passwordInput.fill(password, new Locator.FillOptions().setTimeout(browserConfig.operationTimeoutMillis()));
+            submitLogin(page, passwordInput, browserConfig);
+            page.waitForTimeout(browserConfig.loginSubmitWaitMillis());
+            return !isLoginPage(page, browserConfig);
         } catch (Exception exception) {
             LOGGER.warn("Automatic LinkedIn login failed; manual login may be required.");
             LOGGER.debug("Automatic login failure details.", exception);
@@ -280,7 +299,11 @@ final class EmailExtractor {
         }
     }
 
-    private static void submitLogin(Page page, Locator passwordInput) {
+    private static void submitLogin(
+            Page page,
+            Locator passwordInput,
+            AppConfig.BrowserConfig browserConfig
+    ) {
         for (String selector : List.of(
                 "button[type='submit']",
                 "button[aria-label='Sign in']",
@@ -290,22 +313,27 @@ final class EmailExtractor {
             try {
                 Locator button = page.locator(selector).first();
                 if (button.count() > 0) {
-                    button.click(new Locator.ClickOptions().setTimeout(5000));
+                    button.click(new Locator.ClickOptions().setTimeout(browserConfig.clickTimeoutMillis()));
                     return;
                 }
             } catch (Exception exception) {
-                if (page.url().toLowerCase(Locale.ROOT).contains("/feed") || !isLoginPage(page)) {
+                if (page.url().toLowerCase(Locale.ROOT).contains("/feed")
+                        || !isLoginPage(page, browserConfig)) {
                     return;
                 }
             }
         }
-        passwordInput.press("Enter", new Locator.PressOptions().setTimeout(3000));
+        passwordInput.press("Enter", new Locator.PressOptions().setTimeout(browserConfig.operationTimeoutMillis()));
     }
 
-    private static void waitForManualLogin(Page page, int timeoutSeconds) {
+    private static void waitForManualLogin(
+            Page page,
+            int timeoutSeconds,
+            AppConfig.BrowserConfig browserConfig
+    ) {
         int deadlineMs = timeoutSeconds * 1000;
         int elapsedMs = 0;
-        int pollMs = 2000;
+        int pollMs = browserConfig.manualLoginPollMillis();
 
         LOGGER.info("Manual LinkedIn login required in the opened browser window.");
         LOGGER.info("Waiting up to {} seconds for sign-in to complete.", timeoutSeconds);
@@ -313,12 +341,12 @@ final class EmailExtractor {
             page.waitForTimeout(pollMs);
             elapsedMs += pollMs;
             try {
-                navigate(page, LINKEDIN_HOME);
-                page.waitForTimeout(1500);
+                navigate(page, browserConfig.linkedinHomeUrl());
+                page.waitForTimeout(browserConfig.uiSettleMillis());
             } catch (Exception ignored) {
                 continue;
             }
-            if (!isLoginPage(page)) {
+            if (!isLoginPage(page, browserConfig)) {
                 return;
             }
         }
@@ -326,53 +354,55 @@ final class EmailExtractor {
         throw new IllegalStateException("LinkedIn login did not complete before the timeout.");
     }
 
-    private static void ensureLogin(Page page, int timeoutSeconds) {
-        navigate(page, LINKEDIN_HOME);
-        page.waitForTimeout(2500);
+    private static void ensureLogin(Page page, AppConfig config) {
+        AppConfig.BrowserConfig browserConfig = config.browserConfig();
+        navigate(page, browserConfig.linkedinHomeUrl());
+        page.waitForTimeout(browserConfig.pageSettleMillis());
 
-        if (!isLoginPage(page)) {
+        if (!isLoginPage(page, browserConfig)) {
             return;
         }
 
-        navigate(page, LINKEDIN_LOGIN);
-        page.waitForTimeout(2500);
-        if (attemptCredentialLogin(page)) {
-            navigate(page, LINKEDIN_HOME);
-            page.waitForTimeout(2500);
+        navigate(page, browserConfig.linkedinLoginUrl());
+        page.waitForTimeout(browserConfig.pageSettleMillis());
+        if (attemptCredentialLogin(page, browserConfig)) {
+            navigate(page, browserConfig.linkedinHomeUrl());
+            page.waitForTimeout(browserConfig.pageSettleMillis());
             return;
         }
 
-        waitForManualLogin(page, timeoutSeconds);
-        if (isLoginPage(page)) {
+        waitForManualLogin(page, config.loginTimeoutSeconds(), browserConfig);
+        if (isLoginPage(page, browserConfig)) {
             throw new IllegalStateException("LinkedIn login is still required. Please complete sign-in and rerun the app.");
         }
     }
 
-    private static void searchPosts(Page page, String query) {
-        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8).replace("+", "%20");
-        navigate(page, SEARCH_URL_TEMPLATE.formatted(encodedQuery));
-        page.waitForTimeout(3000);
-        if (isLoginPage(page)) {
+    private static void searchPosts(Page page, AppConfig config) {
+        AppConfig.BrowserConfig browserConfig = config.browserConfig();
+        String encodedQuery = URLEncoder.encode(config.query(), StandardCharsets.UTF_8).replace("+", "%20");
+        navigate(page, browserConfig.linkedinSearchUrlTemplate().formatted(encodedQuery));
+        page.waitForTimeout(browserConfig.searchSettleMillis());
+        if (isLoginPage(page, browserConfig)) {
             throw new IllegalStateException("LinkedIn redirected to the login page before search results loaded.");
         }
-        safeClickPosts(page);
+        safeClickPosts(page, browserConfig);
     }
 
-    private static void applyLatestSort(Page page) {
+    private static void applyLatestSort(Page page, AppConfig.BrowserConfig browserConfig) {
         try {
-            if (openSortByFilter(page)) {
-                selectLatestSort(page);
+            if (openSortByFilter(page, browserConfig)) {
+                selectLatestSort(page, browserConfig);
                 try {
-                    clickShowResults(page);
+                    clickShowResults(page, browserConfig);
                     return;
                 } catch (IllegalStateException ignored) {
-                    page.waitForTimeout(1000);
+                    page.waitForTimeout(browserConfig.uiSettleMillis());
                 }
             }
 
-            openAllFilters(page);
-            selectLatestSort(page);
-            clickShowResults(page);
+            openAllFilters(page, browserConfig);
+            selectLatestSort(page, browserConfig);
+            clickShowResults(page, browserConfig);
         } catch (IllegalStateException exception) {
             LOGGER.warn("Could not apply LinkedIn Latest filter; continuing with current post order.");
         }
@@ -393,9 +423,15 @@ final class EmailExtractor {
         return false;
     }
 
-    private static void safeClickPosts(Page page) {
-        if (clickExactLabel(page, List.of("button", "a", "[role='tab']"), "Posts", 4000)) {
-            page.waitForTimeout(2000);
+    private static void safeClickPosts(Page page, AppConfig.BrowserConfig browserConfig) {
+        if (clickExactLabel(
+                page,
+                List.of("button", "a", "[role='tab']"),
+                "Posts",
+                browserConfig.postsClickTimeoutMillis(),
+                browserConfig.operationTimeoutMillis()
+        )) {
+            page.waitForTimeout(browserConfig.uiSettleMillis());
             return;
         }
 
@@ -407,7 +443,13 @@ final class EmailExtractor {
         throw new IllegalStateException("Could not find or click the LinkedIn 'Posts' tab.");
     }
 
-    private static boolean clickExactLabel(Page page, List<String> selectors, String expectedText, int timeoutMs) {
+    private static boolean clickExactLabel(
+            Page page,
+            List<String> selectors,
+            String expectedText,
+            int timeoutMs,
+            int operationTimeoutMillis
+    ) {
         for (String selector : selectors) {
             try {
                 Locator candidates = page.locator(selector);
@@ -415,7 +457,7 @@ final class EmailExtractor {
                 for (int idx = 0; idx < count; idx++) {
                     Locator candidate = candidates.nth(idx);
                     String label = EmailExtractor.normalizeWhitespace(
-                            candidate.innerText(new Locator.InnerTextOptions().setTimeout(1000))
+                            candidate.innerText(new Locator.InnerTextOptions().setTimeout(operationTimeoutMillis))
                     );
                     if (isExpectedTabLabel(label, expectedText)) {
                         candidate.click(new Locator.ClickOptions().setTimeout(timeoutMs));
@@ -440,32 +482,32 @@ final class EmailExtractor {
         return lowerLabel.equals(lowerExpected) || lowerLabel.startsWith(lowerExpected + " ");
     }
 
-    private static boolean openSortByFilter(Page page) {
+    private static boolean openSortByFilter(Page page, AppConfig.BrowserConfig browserConfig) {
         boolean opened = clickFirstMatching(page, List.of(
                 "button:has-text('Sort by')",
                 "[role='button']:has-text('Sort by')",
                 "[aria-label*='Sort by']",
                 "text=Sort by"
-        ), 5000);
+        ), browserConfig.clickTimeoutMillis());
         if (opened) {
-            page.waitForTimeout(1500);
+            page.waitForTimeout(browserConfig.uiSettleMillis());
         }
         return opened;
     }
 
-    private static void openAllFilters(Page page) {
+    private static void openAllFilters(Page page, AppConfig.BrowserConfig browserConfig) {
         if (!clickFirstMatching(page, List.of(
                 "button:has-text('All filters')",
                 "[role='button']:has-text('All filters')",
                 "[aria-label*='All filters']",
                 "text=All filters"
-        ), 5000)) {
+        ), browserConfig.clickTimeoutMillis())) {
             throw new IllegalStateException("Could not open LinkedIn filters.");
         }
-        page.waitForTimeout(1500);
+        page.waitForTimeout(browserConfig.uiSettleMillis());
     }
 
-    private static void selectLatestSort(Page page) {
+    private static void selectLatestSort(Page page, AppConfig.BrowserConfig browserConfig) {
         if (!clickFirstMatching(page, List.of(
                 "label:has-text('Latest')",
                 "input[value='date_posted']",
@@ -473,31 +515,35 @@ final class EmailExtractor {
                 "[role='option']:has-text('Latest')",
                 "[role='radio']:has-text('Latest')",
                 "text=Latest"
-        ), 5000)) {
+        ), browserConfig.clickTimeoutMillis())) {
             throw new IllegalStateException("Could not select the 'Latest' sort option.");
         }
-        page.waitForTimeout(1000);
+        page.waitForTimeout(browserConfig.uiSettleMillis());
     }
 
-    private static void clickShowResults(Page page) {
+    private static void clickShowResults(Page page, AppConfig.BrowserConfig browserConfig) {
         if (!clickFirstMatching(page, List.of(
                 "button:has-text('Show results')",
                 "[aria-label*='Show results']",
                 "text=Show results"
-        ), 5000)) {
+        ), browserConfig.clickTimeoutMillis())) {
             throw new IllegalStateException("Could not click the LinkedIn 'Show results' button.");
         }
-        page.waitForTimeout(2500);
+        page.waitForTimeout(browserConfig.pageSettleMillis());
     }
 
     static void expandPostContent(Page page, Locator article) {
+        expandPostContent(page, article, AppConfig.defaultBrowserConfig());
+    }
+
+    static void expandPostContent(Page page, Locator article, AppConfig.BrowserConfig browserConfig) {
         for (int attempt = 0; attempt < 3; attempt++) {
-            String beforeClick = innerTextQuietly(article);
-            int clickedCount = clickPostExpandButtons(page, article);
+            String beforeClick = innerTextQuietly(article, browserConfig);
+            int clickedCount = clickPostExpandButtons(page, article, browserConfig);
             if (clickedCount == 0) {
                 return;
             }
-            String afterClick = innerTextQuietly(article);
+            String afterClick = innerTextQuietly(article, browserConfig);
             if (afterClick.equals(beforeClick)) {
                 LOGGER.debug("Clicked {} post expand control(s), but the post text did not change.", clickedCount);
                 return;
@@ -507,10 +553,14 @@ final class EmailExtractor {
         }
     }
 
-    private static int clickPostExpandButtons(Page page, Locator article) {
+    private static int clickPostExpandButtons(
+            Page page,
+            Locator article,
+            AppConfig.BrowserConfig browserConfig
+    ) {
         int clickedCount = clickPostExpandButtonsWithDom(article);
         if (clickedCount > 0) {
-            page.waitForTimeout(350);
+            page.waitForTimeout(browserConfig.expandSettleMillis());
         }
         return clickedCount;
     }
@@ -618,7 +668,7 @@ final class EmailExtractor {
     static boolean isPostExpandLabel(String label) {
         String normalizedLabel = normalizeWhitespace(label)
                 .toLowerCase(Locale.ROOT)
-                .replace('…', '.')
+                .replace("\u2026", "...")
                 .trim();
         return Pattern.matches("^(?:\\.{2,}\\s*)?more(?:\\s*\\.{2,})?$", normalizedLabel)
                 || normalizedLabel.equals("see more")
@@ -627,18 +677,23 @@ final class EmailExtractor {
                 || normalizedLabel.contains("show more");
     }
 
-    private static String innerTextQuietly(Locator locator) {
+    private static String innerTextQuietly(Locator locator, AppConfig.BrowserConfig browserConfig) {
         try {
-            return normalizeWhitespace(locator.innerText(new Locator.InnerTextOptions().setTimeout(1000)));
+            return normalizeWhitespace(locator.innerText(
+                    new Locator.InnerTextOptions().setTimeout(browserConfig.operationTimeoutMillis())
+            ));
         } catch (Exception exception) {
             return "";
         }
     }
 
-    private static String articleFingerprint(Locator article) {
+    private static String articleFingerprint(Locator article, AppConfig.BrowserConfig browserConfig) {
         for (String attributeName : List.of("data-urn", "data-id", "data-view-name", "id")) {
             try {
-                String value = article.getAttribute(attributeName, new Locator.GetAttributeOptions().setTimeout(1000));
+                String value = article.getAttribute(
+                        attributeName,
+                        new Locator.GetAttributeOptions().setTimeout(browserConfig.operationTimeoutMillis())
+                );
                 if (value != null && !value.isBlank()) {
                     return attributeName + ":" + value;
                 }
@@ -648,7 +703,8 @@ final class EmailExtractor {
 
         try {
             String text = EmailExtractor.normalizeWhitespace(
-                    article.innerText(new Locator.InnerTextOptions().setTimeout(3000))
+                    article.innerText(new Locator.InnerTextOptions()
+                            .setTimeout(browserConfig.operationTimeoutMillis()))
             );
             return text.substring(0, Math.min(250, text.length()));
         } catch (Exception exception) {

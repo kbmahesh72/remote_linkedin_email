@@ -89,7 +89,10 @@ final class EmailSender {
                     String subject = renderSubject(account, chooseSubject(subjects), firstName);
                     String body = renderBody(bodyTemplate, firstName);
                     waitBeforeSending(delayBeforeEachEmail, toEmail);
-                    Session session = sessionsByAccountId.computeIfAbsent(account.id(), ignored -> createSession(account));
+                    Session session = sessionsByAccountId.computeIfAbsent(
+                            account.id(),
+                            ignored -> createSession(account, config.smtpConfig())
+                    );
                     sendOne(session, config, account, toEmail, subject, body);
                     sentCount++;
                     LOGGER.info("Email sent to {} from {}", toEmail, account.gmailUsername());
@@ -238,12 +241,12 @@ final class EmailSender {
         return account.bodyTemplatePath() == null ? config.bodyTemplatePath() : account.bodyTemplatePath();
     }
 
-    private static Session createSession(AppConfig.EmailAccount account) {
+    private static Session createSession(AppConfig.EmailAccount account, AppConfig.SmtpConfig smtpConfig) {
         Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", Boolean.toString(smtpConfig.auth()));
+        properties.put("mail.smtp.starttls.enable", Boolean.toString(smtpConfig.startTls()));
+        properties.put("mail.smtp.host", smtpConfig.host());
+        properties.put("mail.smtp.port", Integer.toString(smtpConfig.port()));
 
         return Session.getInstance(properties, new jakarta.mail.Authenticator() {
             @Override

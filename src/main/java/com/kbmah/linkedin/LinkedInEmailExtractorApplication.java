@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,7 +72,18 @@ public final class LinkedInEmailExtractorApplication {
     private static void runCycle(AppConfig config, EmailExtractor collector, Path outputDir, Path profileDir)
             throws Exception {
         Path outputPath = ExcelLeadRepository.outputPathForToday(outputDir);
-        List<Lead> leads = collector.collect(config, profileDir);
+        List<Lead> leads = new ArrayList<>();
+        for (int index = 0; index < config.queries().size(); index++) {
+            String query = config.queries().get(index);
+            LOGGER.info("Starting LinkedIn search {}/{}: {}", index + 1, config.queries().size(), query);
+            List<Lead> queryLeads = collector.collect(config.withQuery(query), profileDir);
+            leads.addAll(queryLeads);
+            LOGGER.info("Completed LinkedIn search {}/{}: extracted {} emails for {}",
+                    index + 1, config.queries().size(), queryLeads.size(), query);
+        }
+
+        LOGGER.info("All {} LinkedIn searches completed and browsers closed. Saving all extracted emails before sending.",
+                config.queries().size());
         SaveResult saveResult = ExcelLeadRepository.save(leads, outputPath);
 
         LOGGER.info("Saved {} new emails to {}", saveResult.savedCount(), saveResult.outputPath());
@@ -87,7 +99,11 @@ public final class LinkedInEmailExtractorApplication {
             }
         }
 
-        int sentCount = PendingEmailSenderApplication.sendPendingEmailsForToday(config, outputDir);
+        LOGGER.info("Excel save completed. Starting email sender from {}", saveResult.outputPath());
+        int sentCount = PendingEmailSenderApplication.sendPendingEmails(
+                config,
+                saveResult.outputPath()
+        );
         LOGGER.info("Automatic email sender finished. Sent {} emails this cycle.", sentCount);
     }
 }

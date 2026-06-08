@@ -26,18 +26,20 @@ class LinkedInEmailExtractorApplicationTest {
 
     @Test
     void defaultsToExistingPlaywrightProfile() {
-        AppConfig config = AppConfig.parse(new String[]{"--config", tempDir.resolve("missing.properties").toString()});
+        AppConfig config = AppConfig.parse(new String[0]);
 
         assertEquals(Path.of("playwright-profile"), config.profileDir());
         assertEquals(Path.of("automation-output"), config.outputDir());
-        assertEquals(5.0, config.intervalMinutes());
+        assertEquals(7.0, config.intervalMinutes());
+        assertEquals(List.of("Hiring Java C2C Remote", "Hiring Java W2 Remote"), config.queries());
+        assertEquals("Hiring Java C2C Remote", config.query());
     }
 
     @Test
     void readsIntervalFromConfigFile() throws Exception {
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, """
-                query=Config query
+        writeConfig(configPath, """
+                queries=Config query
                 interval-minutes=7
                 max-emails=12
                 """);
@@ -45,6 +47,7 @@ class LinkedInEmailExtractorApplicationTest {
         AppConfig config = AppConfig.parse(new String[]{"--config", configPath.toString()});
 
         assertEquals("Config query", config.query());
+        assertEquals(List.of("Config query"), config.queries());
         assertEquals(7.0, config.intervalMinutes());
         assertEquals(12, config.maxEmails());
     }
@@ -53,7 +56,7 @@ class LinkedInEmailExtractorApplicationTest {
     void readsSubjectVariantsPathFromConfigFile() throws Exception {
         Path variantsPath = tempDir.resolve("subject-variants.txt");
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, """
+        writeConfig(configPath, """
                 subject.variants.path=%s
                 """.formatted(escapePropertiesPath(variantsPath)));
 
@@ -65,7 +68,8 @@ class LinkedInEmailExtractorApplicationTest {
     @Test
     void readsMultipleSenderAccountsFromConfigFile() throws Exception {
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, """
+        writeConfig(configPath, """
+                email.accounts.file=
                 email.accounts=1,2
                 email.account.1.username=first@example.com
                 email.account.1.app.password=first-password
@@ -102,7 +106,7 @@ class LinkedInEmailExtractorApplicationTest {
         Files.writeString(accountsPath, accounts);
 
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, """
+        writeConfig(configPath, """
                 email.accounts.file=%s
                 """.formatted(escapePropertiesPath(accountsPath)));
 
@@ -127,7 +131,7 @@ class LinkedInEmailExtractorApplicationTest {
 
     @Test
     void defaultEmailAssetsAreInsideCurrentProjectFolder() {
-        AppConfig config = AppConfig.parse(new String[]{"--config", tempDir.resolve("missing.properties").toString()});
+        AppConfig config = AppConfig.parse(new String[0]);
 
         assertEquals(Path.of("templates/subjects/default.txt"), config.emailConfig().subjectTemplatePath());
         assertNull(config.emailConfig().subjectVariantsPath());
@@ -163,7 +167,7 @@ class LinkedInEmailExtractorApplicationTest {
     @Test
     void commandLineOverridesConfigFile() throws Exception {
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, "interval-minutes=7%n".formatted());
+        writeConfig(configPath, "interval-minutes=7%n".formatted());
 
         AppConfig config = AppConfig.parse(new String[]{
                 "--config", configPath.toString(),
@@ -176,7 +180,7 @@ class LinkedInEmailExtractorApplicationTest {
     @Test
     void manualEmailSenderSkipsMissingTodaysWorkbook() throws Exception {
         Path configPath = tempDir.resolve("application.properties");
-        Files.writeString(configPath, """
+        writeConfig(configPath, """
                 output-dir=%s
                 email.enabled=false
                 run-once=true
@@ -351,7 +355,8 @@ class LinkedInEmailExtractorApplicationTest {
                 subject,
                 null,
                 body,
-                resume
+                resume,
+                smtpConfig()
         ));
 
         assertEquals(1, sentCount);
@@ -384,7 +389,8 @@ class LinkedInEmailExtractorApplicationTest {
                 subject,
                 null,
                 body,
-                resume
+                resume,
+                smtpConfig()
         ));
 
         assertEquals(1, sentCount);
@@ -419,7 +425,8 @@ class LinkedInEmailExtractorApplicationTest {
                                 "", subject, null, body),
                         new AppConfig.EmailAccount("2", "second@example.com", "", "", secondResume,
                                 "", subject, null, body)
-                )
+                ),
+                smtpConfig()
         ));
 
         assertEquals(2, sentCount);
@@ -440,7 +447,11 @@ class LinkedInEmailExtractorApplicationTest {
     @Test
     void outputFileArgumentKeepsDateBasedFileNameAndUsesParentDirectory() {
         AppConfig config = AppConfig.parse(
-                new String[]{"--output", "reports\\ignored.xlsx", "--run-once", "--interval-minutes", "0.1"}
+                new String[]{
+                        "--output", "reports\\ignored.xlsx",
+                        "--run-once",
+                        "--interval-minutes", "0.1"
+                }
         );
 
         assertEquals(Path.of("reports"), config.outputDir());
@@ -450,5 +461,14 @@ class LinkedInEmailExtractorApplicationTest {
 
     private static String escapePropertiesPath(Path path) {
         return path.toString().replace("\\", "\\\\");
+    }
+
+    private static void writeConfig(Path configPath, String overrides) throws Exception {
+        String baseConfig = Files.readString(Path.of("application.properties"));
+        Files.writeString(configPath, baseConfig + System.lineSeparator() + overrides);
+    }
+
+    private static AppConfig.SmtpConfig smtpConfig() {
+        return new AppConfig.SmtpConfig(true, true, "smtp.gmail.com", 587);
     }
 }
