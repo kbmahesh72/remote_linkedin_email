@@ -3,4 +3,4 @@ automation-output/
 playwright-profile/
 .codex-video-tools/
 *.log
-config/email-accounts.csv
+config/java-email-accounts.csv

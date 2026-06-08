@@ -95,12 +95,12 @@ class LinkedInEmailExtractorApplicationTest {
 
     @Test
     void readsLargeSenderAccountPoolFromCsvFile() throws Exception {
-        Path accountsPath = tempDir.resolve("email-accounts.csv");
+        Path accountsPath = tempDir.resolve("java-email-accounts.csv");
         StringBuilder accounts = new StringBuilder(
                 "id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath\n"
         );
         for (int idx = 1; idx <= 50; idx++) {
-            accounts.append("%d,sender%02d@example.com,password-%02d,cc%02d@example.com,resume/sender%02d.docx,,sender%02d@example.com.txt,sender%02d@example.com.variants.txt,sender%02d@example.com.txt\n"
+            accounts.append("%d,sender%02d@example.com,password-%02d,cc%02d@example.com,profiles/sender%02d@example.com/resume.docx,,profiles/sender%02d@example.com/subject.txt,profiles/sender%02d@example.com/subject-variants.txt,profiles/sender%02d@example.com/body.txt\n"
                     .formatted(idx, idx, idx, idx, idx, idx, idx, idx));
         }
         Files.writeString(accountsPath, accounts);
@@ -116,17 +116,19 @@ class LinkedInEmailExtractorApplicationTest {
         assertEquals("1", config.emailConfig().accounts().get(0).id());
         assertEquals("sender01@example.com", config.emailConfig().accounts().get(0).gmailUsername());
         assertEquals("cc01@example.com", config.emailConfig().accounts().get(0).ccEmail());
-        assertEquals(Path.of("resume/sender01.docx"), config.emailConfig().accounts().get(0).attachmentPath());
-        assertEquals(Path.of("templates", "subjects", "sender01@example.com.txt"),
+        assertEquals(Path.of("profiles/sender01@example.com/resume.docx"),
+                config.emailConfig().accounts().get(0).attachmentPath());
+        assertEquals(Path.of("profiles/sender01@example.com/subject.txt"),
                 config.emailConfig().accounts().get(0).subjectTemplatePath());
-        assertEquals(Path.of("templates", "subjects", "sender01@example.com.variants.txt"),
+        assertEquals(Path.of("profiles/sender01@example.com/subject-variants.txt"),
                 config.emailConfig().accounts().get(0).subjectVariantsPath());
-        assertEquals(Path.of("templates", "body", "sender01@example.com.txt"),
+        assertEquals(Path.of("profiles/sender01@example.com/body.txt"),
                 config.emailConfig().accounts().get(0).bodyTemplatePath());
         assertEquals("50", config.emailConfig().accounts().get(49).id());
         assertEquals("sender50@example.com", config.emailConfig().accounts().get(49).gmailUsername());
         assertEquals("cc50@example.com", config.emailConfig().accounts().get(49).ccEmail());
-        assertEquals(Path.of("resume/sender50.docx"), config.emailConfig().accounts().get(49).attachmentPath());
+        assertEquals(Path.of("profiles/sender50@example.com/resume.docx"),
+                config.emailConfig().accounts().get(49).attachmentPath());
     }
 
     @Test

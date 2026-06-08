@@ -83,7 +83,7 @@ Email settings live in `application.properties`:
 ```properties
 email.enabled=true
 email.dry-run=false
-email.accounts.file=config/email-accounts.csv
+email.accounts.file=config/java-email-accounts.csv
 subject.template.path=templates/subjects/default.txt
 subject.variants.path=
 body.template.path=templates/body/default.txt
@@ -98,17 +98,19 @@ LinkedIn URLs, scrolling, browser waits/timeouts, scheduling, output paths, temp
 credential environment-variable names. Keep passwords in the configured environment variables rather than
 committing them to a properties file.
 
-Put Gmail senders and template paths in `config/email-accounts.csv`:
+Put Java-profile Gmail senders and asset paths in `config/java-email-accounts.csv`. Keep each sender's subject,
+subject variants, body, and CV together under `profiles/<email>/`:
 
 ```csv
 id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath
-1,sender01@gmail.com,app password,cc@example.com,resume/Sender01_Resume.docx,,sender01@gmail.com.txt,sender01@gmail.com.variants.txt,sender01@gmail.com.txt
-2,sender02@gmail.com,app password,cc@example.com,resume/Sender02_Resume.docx,GC - ,sender02@gmail.com.txt,sender02@gmail.com.variants.txt,sender02@gmail.com.txt
+1,sender01@gmail.com,app password,cc@example.com,profiles/sender01@gmail.com/Sender01_Resume.docx,,profiles/sender01@gmail.com/subject.txt,profiles/sender01@gmail.com/subject-variants.txt,profiles/sender01@gmail.com/body.txt
+2,sender02@gmail.com,app password,cc@example.com,profiles/sender02@gmail.com/Sender02_Resume.docx,GC - ,profiles/sender02@gmail.com/subject.txt,profiles/sender02@gmail.com/subject-variants.txt,profiles/sender02@gmail.com/body.txt
 ```
 
-For 50 Gmail accounts, use numeric ids `1`, `2`, `3`, etc. Pending workbook rows are sent round-robin across all configured accounts. Each row owns its sender Gmail, app password, optional CC email, resume attachment path, subject prefix, subject file, subject variants file, and body file. Leave `ccEmail` blank to send without CC. Subject files live under `templates/subjects/`, and body files live under `templates/body/`; if `subjectPath`, `subjectVariantsPath`, or `bodyPath` is just a filename, the app looks in those folders automatically. App passwords can also be supplied as environment variables using `gmail.account-password-env-prefix`, for example `GMAIL_APP_PASSWORD_1`.
+For 50 Gmail accounts, use numeric ids `1`, `2`, `3`, etc. Pending workbook rows are sent round-robin across all configured accounts. Each row owns its sender Gmail, app password, optional CC email, CV attachment path, subject prefix, subject file, subject variants file, and body file. Leave `ccEmail` blank to send without CC. Use explicit `profiles/<email>/...` paths to keep each profile self-contained. Simple filenames are still resolved under `templates/subjects/` and `templates/body/` for backward compatibility. App passwords can also be supplied as environment variables using `gmail.account-password-env-prefix`, for example `GMAIL_APP_PASSWORD_1`.
 
-Use Gmail addresses as subject/body filenames, for example `templates/subjects/surya.p2805@gmail.com.txt` and `templates/body/surya.p2805@gmail.com.txt`. To prepend `GC - ` for Surya, set `subjectPrefix` to `GC - ` in that CSV row.
+Inside each `profiles/<email>/` folder, use `subject.txt`, `subject-variants.txt`, and `body.txt`; keep that
+sender's CV in the same folder. To prepend `GC - ` for Surya, set `subjectPrefix` to `GC - ` in that CSV row.
 
 For a small sender list, `email.accounts=1,2` and `email.account.<id>.*` properties are still supported when `email.accounts.file` is blank, including `email.account.<id>.cc.email` and `email.account.<id>.attachment.path`.
 
