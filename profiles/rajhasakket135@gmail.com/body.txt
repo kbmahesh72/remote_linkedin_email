@@ -1,0 +1,17 @@
+Dear Hiring Manager,
+
+I am excited to apply for the Full Stack Python Developer position. With 8+ years of experience in software development, I have successfully designed, developed, and deployed scalable web applications and distributed systems across diverse business domains.
+
+In my current role at Visa, I build secure, high-performance applications that support critical business operations and large-scale transaction processing. My expertise includes developing backend services using Python, Django, Flask, REST APIs, and microservices architectures, as well as building responsive user interfaces using React, JavaScript, HTML, and CSS. I have extensive experience working with PostgreSQL, MySQL, MongoDB, and cloud-native solutions on AWS.
+
+Additionally, I have hands-on experience with data processing using Pandas, CI/CD pipeline implementation, containerization, automated testing, and AWS services including Lambda, S3, SQS, SNS, API Gateway, RDS, Aurora, and DynamoDB. I am passionate about writing clean, maintainable code and delivering reliable software solutions that provide measurable business value.
+
+With a strong foundation in full-stack development, cloud technologies, and modern software engineering practices, I am confident in my ability to contribute effectively to your team. I am eager to bring my technical expertise, collaborative mindset, and problem-solving skills to help drive innovation and success within your organization.
+
+Thank you for your time and consideration. I look forward to discussing how my background and experience can contribute to your team's goals.
+
+Best Regards,
+Raja Saketh Garige
+Phone: 408-618-4924
+Email: rajhasakket135@gmail.com
+LinkedIn: https://www.linkedin.com/in/raja-saketh-garige-07b9aa238

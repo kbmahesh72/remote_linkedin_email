@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 
 final class EmailSender {
@@ -212,17 +213,73 @@ final class EmailSender {
         }
         Path attachmentPath = attachmentPathFor(config, account);
         if (attachmentPath == null) {
-            throw new IllegalStateException("Resume attachment path is required for email account '" + account.id()
-                    + "'. Set attachmentPath in the CSV row.");
-        }
-        if (!Files.isRegularFile(attachmentPath)) {
-            throw new IllegalStateException("Resume attachment not found for account '" + account.id() + "': "
-                    + attachmentPath);
+            throw new IllegalStateException("No DOCX or PDF resume attachment found for account '" + account.id()
+                    + "'. Add a resume to the account profile folder.");
         }
     }
 
-    private static Path attachmentPathFor(AppConfig.EmailConfig config, AppConfig.EmailAccount account) {
-        return account.hasAttachmentPath() ? account.attachmentPath() : config.attachmentPath();
+    static Path attachmentPathFor(AppConfig.EmailConfig config, AppConfig.EmailAccount account) {
+        Path configuredPath = account.hasAttachmentPath() ? account.attachmentPath() : config.attachmentPath();
+        if (configuredPath != null && Files.isRegularFile(configuredPath)) {
+            return configuredPath;
+        }
+
+        Path profileDir = profileDirectory(config, account, configuredPath);
+        Path discoveredPath = findResumeInDirectory(profileDir);
+        if (discoveredPath != null && configuredPath != null) {
+            LOGGER.info("Configured resume was not found for account '{}': {}. Using {} instead.",
+                    account.id(), configuredPath, discoveredPath);
+        }
+        return discoveredPath;
+    }
+
+    private static Path profileDirectory(
+            AppConfig.EmailConfig config,
+            AppConfig.EmailAccount account,
+            Path configuredPath
+    ) {
+        if (configuredPath != null && configuredPath.getParent() != null) {
+            return configuredPath.getParent();
+        }
+
+        for (Path templatePath : List.of(
+                subjectTemplatePathFor(config, account),
+                bodyTemplatePathFor(config, account)
+        )) {
+            if (templatePath != null && templatePath.getParent() != null) {
+                return templatePath.getParent();
+            }
+        }
+        return null;
+    }
+
+    private static Path findResumeInDirectory(Path directory) {
+        if (directory == null || !Files.isDirectory(directory)) {
+            return null;
+        }
+
+        try (var files = Files.list(directory)) {
+            return files
+                    .filter(Files::isRegularFile)
+                    .filter(EmailSender::isResumeFile)
+                    .sorted(Comparator
+                            .comparingInt(EmailSender::resumeExtensionPriority)
+                            .thenComparing(path -> path.getFileName().toString(), String.CASE_INSENSITIVE_ORDER))
+                    .findFirst()
+                    .orElse(null);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not inspect profile folder for a resume: " + directory, exception);
+        }
+    }
+
+    private static boolean isResumeFile(Path path) {
+        String fileName = path.getFileName().toString().toLowerCase(Locale.ROOT);
+        return !fileName.startsWith("~$")
+                && (fileName.endsWith(".docx") || fileName.endsWith(".pdf"));
+    }
+
+    private static int resumeExtensionPriority(Path path) {
+        return path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".docx") ? 0 : 1;
     }
 
     private static String ccEmailFor(AppConfig.EmailConfig config, AppConfig.EmailAccount account) {

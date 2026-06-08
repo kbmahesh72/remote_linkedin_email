@@ -12,7 +12,7 @@
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <playwright.version>1.45.1</playwright.version>
+        <playwright.version>1.59.0</playwright.version>
         <poi.version>5.3.0</poi.version>
         <slf4j.version>2.0.13</slf4j.version>
         <log4j.version>2.23.1</log4j.version>

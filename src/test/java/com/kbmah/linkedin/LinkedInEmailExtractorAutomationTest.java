@@ -53,12 +53,12 @@ class LinkedInEmailExtractorAutomationTest {
             page.setContent("""
                     <main>
                       <article role="listitem" data-urn="urn:post:1">
-                        Feed post Hiring Java C2C developers today.
+                        Feed post Hiring Python remote developers today.
                         Please contact john123@example.com or recruiter@test.org for details.
                         Like Comment Repost Send
                       </article>
                       <article role="listitem" data-urn="urn:post:2">
-                        Feed post Another C2C Java opening.
+                        Feed post Another remote Python opening.
                         Contact JOHN123@example.com and mary-jane99@example.net.
                         Like Comment Repost Send
                       </article>
@@ -70,11 +70,11 @@ class LinkedInEmailExtractorAutomationTest {
             for (int idx = 0; idx < articles.count(); idx++) {
                 leads.addAll(EmailExtractor.extractLeads(
                         articles.nth(idx).innerText(),
-                        "Java c2c hiring"
+                        "Python remote hiring"
                 ));
             }
 
-            Path output = tempDir.resolve("java-automation-test.xlsx");
+            Path output = tempDir.resolve("python-automation-test.xlsx");
             ExcelLeadRepository.save(leads, output);
 
             try (InputStream inputStream = Files.newInputStream(output);
@@ -97,7 +97,7 @@ class LinkedInEmailExtractorAutomationTest {
             page.setContent("""
                     <main>
                       <article role="listitem" data-urn="urn:post:more-middle">
-                        Feed post Hiring Java C2C developers today.
+                        Feed post Hiring Python remote developers today.
                         <button type="button" onclick="
                           document.querySelector('[data-hidden-email]').style.display='inline';
                           this.remove();
@@ -112,7 +112,7 @@ class LinkedInEmailExtractorAutomationTest {
 
             Locator article = page.locator("[role='listitem']").first();
             EmailExtractor.expandPostContent(page, article);
-            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Java c2c hiring");
+            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Python remote hiring");
 
             assertEquals(1, leads.size());
             assertEquals("middle-post@example.com", leads.get(0).email());
@@ -125,7 +125,7 @@ class LinkedInEmailExtractorAutomationTest {
             page.setContent("""
                     <main>
                       <article role="listitem" data-urn="urn:post:dom-more">
-                        Hiring Java C2C developers today.
+                        Hiring Python remote developers today.
                         <span class="feed-shared-inline-show-more-text" onclick="
                           document.querySelector('[data-dom-hidden-email]').style.display='inline';
                           this.remove();
@@ -140,7 +140,7 @@ class LinkedInEmailExtractorAutomationTest {
 
             Locator article = page.locator("[role='listitem']").first();
             EmailExtractor.expandPostContent(page, article);
-            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Java c2c hiring");
+            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Python remote hiring");
 
             assertEquals(1, leads.size());
             assertEquals("dom-more@example.com", leads.get(0).email());
@@ -153,7 +153,7 @@ class LinkedInEmailExtractorAutomationTest {
             page.setContent("""
                     <main>
                       <article role="listitem" data-urn="urn:post:plain-more">
-                        Hiring Java C2C developers today.
+                        Hiring Python remote developers today.
                         <span onclick="
                           document.querySelector('[data-plain-hidden-email]').style.display='inline';
                           this.remove();
@@ -168,7 +168,7 @@ class LinkedInEmailExtractorAutomationTest {
 
             Locator article = page.locator("[role='listitem']").first();
             EmailExtractor.expandPostContent(page, article);
-            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Java c2c hiring");
+            List<Lead> leads = EmailExtractor.extractLeads(article.innerText(), "Python remote hiring");
 
             assertEquals(1, leads.size());
             assertEquals("plain-more@example.com", leads.get(0).email());

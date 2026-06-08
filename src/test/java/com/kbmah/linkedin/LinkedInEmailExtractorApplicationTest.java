@@ -30,10 +30,10 @@ class LinkedInEmailExtractorApplicationTest {
 
         assertEquals(Path.of("playwright-profile"), config.profileDir());
         assertEquals(Path.of("automation-output"), config.outputDir());
-        assertEquals(2.0, config.intervalMinutes());
         assertTrue(config.browserConfig().headless());
-        assertEquals(List.of("Hiring Java C2C Remote", "Hiring Java W2 Remote"), config.queries());
-        assertEquals("Hiring Java C2C Remote", config.query());
+        assertEquals(2.0, config.intervalMinutes());
+        assertEquals(List.of("Hiring Python C2C Remote", "Hiring Python W2 Remote"), config.queries());
+        assertEquals("Hiring Python C2C Remote", config.query());
     }
 
     @Test
@@ -96,7 +96,7 @@ class LinkedInEmailExtractorApplicationTest {
 
     @Test
     void readsLargeSenderAccountPoolFromCsvFile() throws Exception {
-        Path accountsPath = tempDir.resolve("java-email-accounts.csv");
+        Path accountsPath = tempDir.resolve("python-email-accounts.csv");
         StringBuilder accounts = new StringBuilder(
                 "id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath\n"
         );
@@ -136,9 +136,12 @@ class LinkedInEmailExtractorApplicationTest {
     void defaultEmailAssetsAreInsideCurrentProjectFolder() {
         AppConfig config = AppConfig.parse(new String[0]);
 
-        assertEquals(Path.of("templates/subjects/default.txt"), config.emailConfig().subjectTemplatePath());
-        assertNull(config.emailConfig().subjectVariantsPath());
-        assertEquals(Path.of("templates/body/default.txt"), config.emailConfig().bodyTemplatePath());
+        assertEquals(Path.of("profiles/rajhasakket135@gmail.com/subject.txt"),
+                config.emailConfig().subjectTemplatePath());
+        assertEquals(Path.of("profiles/rajhasakket135@gmail.com/subject-variants.txt"),
+                config.emailConfig().subjectVariantsPath());
+        assertEquals(Path.of("profiles/rajhasakket135@gmail.com/body.txt"),
+                config.emailConfig().bodyTemplatePath());
         assertNull(config.emailConfig().attachmentPath());
     }
 
@@ -152,19 +155,19 @@ class LinkedInEmailExtractorApplicationTest {
 
     @Test
     void subjectPrefixIsPrependedBeforeRenderedSubject() {
-        AppConfig.EmailAccount suryaAccount = new AppConfig.EmailAccount(
-                "2",
-                "surya.p2805@gmail.com",
+        AppConfig.EmailAccount account = new AppConfig.EmailAccount(
+                "1",
+                "rajhasakket135@gmail.com",
                 "",
                 "",
-                Path.of("resume/Surya_Narayana_Java.pdf"),
-                "GC - ",
-                Path.of("templates/subjects/surya.p2805@gmail.com.txt"),
+                Path.of("profiles/rajhasakket135@gmail.com/CV_Raja_Saketh_Garige.docx"),
+                "Python - ",
+                Path.of("profiles/rajhasakket135@gmail.com/subject.txt"),
                 null,
-                Path.of("templates/body/surya.p2805@gmail.com.txt")
+                Path.of("profiles/rajhasakket135@gmail.com/body.txt")
         );
 
-        assertEquals("GC - Hello Surya", EmailSender.renderSubject(suryaAccount, "Hello ${firstname}", "Surya"));
+        assertEquals("Python - Hello Raja", EmailSender.renderSubject(account, "Hello ${firstname}", "Raja"));
     }
 
     @Test
@@ -206,18 +209,18 @@ class LinkedInEmailExtractorApplicationTest {
     @Test
     void extractsUniqueEmailIdsFromPostText() {
         String postText = """
-                Feed post Hiring Java developers for c2c roles.
+                Feed post Hiring Python developers for remote roles.
                 Contact John123@Example.com or recruiter@test.org.
                 Duplicate JOHN123@example.com should not create another row.
                 Like Comment Repost Send
                 """;
 
-        List<Lead> leads = EmailExtractor.extractLeads(postText, "Java c2c hiring");
+        List<Lead> leads = EmailExtractor.extractLeads(postText, "Python remote hiring");
 
         assertEquals(2, leads.size());
         assertEquals("john123@example.com", leads.get(0).email());
         assertEquals("recruiter@test.org", leads.get(1).email());
-        assertTrue(leads.get(0).subject().startsWith("Java c2c hiring"));
+        assertTrue(leads.get(0).subject().startsWith("Python remote hiring"));
     }
 
     @Test
@@ -240,11 +243,11 @@ class LinkedInEmailExtractorApplicationTest {
     void skipsPostsWithBlockedKeywords() {
         assertTrue(EmailExtractor.extractLeads(
                 "Feed post Sales role available. Contact sales@example.com",
-                "Java c2c hiring"
+                "Python remote hiring"
         ).isEmpty());
         assertTrue(EmailExtractor.extractLeads(
                 "Feed post Bench candidates available. Contact bench@example.com",
-                "Java c2c hiring"
+                "Python remote hiring"
         ).isEmpty());
     }
 
@@ -252,10 +255,10 @@ class LinkedInEmailExtractorApplicationTest {
     void savesExcelWithHeadersFirstnameAndDedupedPostsAndEmails() throws Exception {
         Path output = tempDir.resolve("linkedin.com.xlsx");
         List<Lead> leads = List.of(
-                new Lead("john123@example.com", "Java c2c hiring - first"),
-                new Lead("john123@example.com", "Java c2c hiring - first"),
-                new Lead("JOHN123@example.com", "Java c2c hiring - different post"),
-                new Lead("mary-jane99@example.com", "Java c2c hiring - second")
+                new Lead("john123@example.com", "Python remote hiring - first"),
+                new Lead("john123@example.com", "Python remote hiring - first"),
+                new Lead("JOHN123@example.com", "Python remote hiring - different post"),
+                new Lead("mary-jane99@example.com", "Python remote hiring - second")
         );
 
         SaveResult firstSave = ExcelLeadRepository.save(leads, output);
@@ -326,7 +329,7 @@ class LinkedInEmailExtractorApplicationTest {
     void emailSenderMarksOnlyPendingRowsAfterSuccessfulDryRun() throws Exception {
         Path output = tempDir.resolve("emails.xlsx");
         Path subject = tempDir.resolve("subject.txt");
-        Path body = tempDir.resolve("padmaja_body.txt");
+        Path body = tempDir.resolve("raja_body.txt");
         Path resume = tempDir.resolve("resume.docx");
         Files.writeString(subject, "Test subject");
         Files.writeString(body, "Dear ${firstname},\nBody");
@@ -397,6 +400,58 @@ class LinkedInEmailExtractorApplicationTest {
         ));
 
         assertEquals(1, sentCount);
+    }
+
+    @Test
+    void findsRenamedDocxResumeInAccountProfileFolder() throws Exception {
+        Path profileDir = tempDir.resolve("profiles").resolve("sender@example.com");
+        Files.createDirectories(profileDir);
+        Path subject = profileDir.resolve("subject.txt");
+        Path body = profileDir.resolve("body.txt");
+        Path renamedResume = profileDir.resolve("Candidate_Resume.docx");
+        Files.writeString(subject, "Test subject");
+        Files.writeString(body, "Test body");
+        Files.writeString(renamedResume, "resume");
+
+        AppConfig.EmailAccount account = new AppConfig.EmailAccount(
+                "1",
+                "sender@example.com",
+                "",
+                "",
+                profileDir.resolve("old-email-name.docx"),
+                "",
+                subject,
+                null,
+                body
+        );
+
+        assertEquals(renamedResume, EmailSender.attachmentPathFor(emailConfig(account, subject, body), account));
+    }
+
+    @Test
+    void findsPdfResumeWhenProfileFolderHasNoDocx() throws Exception {
+        Path profileDir = tempDir.resolve("profiles").resolve("sender@example.com");
+        Files.createDirectories(profileDir);
+        Path subject = profileDir.resolve("subject.txt");
+        Path body = profileDir.resolve("body.txt");
+        Path pdfResume = profileDir.resolve("Candidate_Resume.pdf");
+        Files.writeString(subject, "Test subject");
+        Files.writeString(body, "Test body");
+        Files.writeString(pdfResume, "resume");
+
+        AppConfig.EmailAccount account = new AppConfig.EmailAccount(
+                "1",
+                "sender@example.com",
+                "",
+                "",
+                profileDir.resolve("missing.docx"),
+                "",
+                subject,
+                null,
+                body
+        );
+
+        assertEquals(pdfResume, EmailSender.attachmentPathFor(emailConfig(account, subject, body), account));
     }
 
     @Test
@@ -473,5 +528,25 @@ class LinkedInEmailExtractorApplicationTest {
 
     private static AppConfig.SmtpConfig smtpConfig() {
         return new AppConfig.SmtpConfig(true, true, "smtp.gmail.com", 587);
+    }
+
+    private static AppConfig.EmailConfig emailConfig(
+            AppConfig.EmailAccount account,
+            Path subject,
+            Path body
+    ) {
+        return new AppConfig.EmailConfig(
+                true,
+                true,
+                "",
+                "",
+                "",
+                subject,
+                null,
+                body,
+                null,
+                List.of(account),
+                smtpConfig()
+        );
     }
 }

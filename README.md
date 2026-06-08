@@ -32,7 +32,7 @@ is unavailable in this mode; use the saved authenticated profile or the configur
 Configure separate LinkedIn searches as a comma-separated ordered list:
 
 ```properties
-queries=Hiring Java C2C Remote,Hiring Java W2 Remote
+queries=Hiring Python C2C Remote,Hiring Python W2 Remote
 ```
 
 Each query runs in its own browser session. After every search finishes and its browser closes, the combined
@@ -41,7 +41,7 @@ results are saved to Excel before email sending starts.
 Optional arguments:
 
 ```powershell
-java -jar target\linkedin-email-extractor-1.0.0.jar --query '"Hiring Java C2C" OR "Hiring Java W2"' --max-scrolls 30 --scroll-pause 2.5 --max-emails 25 --output-dir reports --interval-minutes 5
+java -jar target\linkedin-email-extractor-1.0.0.jar --query '"Hiring Python Developer" Remote' --max-scrolls 30 --scroll-pause 2.5 --max-emails 25 --output-dir reports --interval-minutes 5
 ```
 
 To use a different complete config file:
@@ -77,7 +77,7 @@ New rows use `N` for `Is Email Sent`; existing values in that column are not ove
 
 ## Email Sending
 
-The main automation sends pending emails automatically after each LinkedIn collection cycle. With the default `interval-minutes=0.1666666667`, this checks for pending emails every 10 seconds.
+The main automation sends pending emails automatically after each LinkedIn collection cycle. With the default `interval-minutes=2`, this checks for pending emails every two minutes.
 Rows with column E not equal to `Y` are emailed one by one immediately, then column E is updated to `Y` after each successful send.
 If Gmail authentication or authorization fails, the sender stops immediately with a failure exit code so credentials can be fixed instead of retrying forever.
 
@@ -86,10 +86,10 @@ Email settings live in `application.properties`:
 ```properties
 email.enabled=true
 email.dry-run=false
-email.accounts.file=config/java-email-accounts.csv
-subject.template.path=templates/subjects/default.txt
-subject.variants.path=
-body.template.path=templates/body/default.txt
+email.accounts.file=config/python-email-accounts.csv
+subject.template.path=profiles/rajhasakket135@gmail.com/subject.txt
+subject.variants.path=profiles/rajhasakket135@gmail.com/subject-variants.txt
+body.template.path=profiles/rajhasakket135@gmail.com/body.txt
 smtp.auth=true
 smtp.starttls.enable=true
 smtp.host=smtp.gmail.com
@@ -101,19 +101,24 @@ LinkedIn URLs, scrolling, browser waits/timeouts, scheduling, output paths, temp
 credential environment-variable names. Keep passwords in the configured environment variables rather than
 committing them to a properties file.
 
-Put Java-profile Gmail senders and asset paths in `config/java-email-accounts.csv`. Keep each sender's subject,
+The default `browser.headless=true` runs Chromium without opening a browser window. Use the `--headless`
+argument when overriding a config file that has headless mode disabled.
+
+Put Python-profile Gmail senders and asset paths in `config/python-email-accounts.csv`. Keep each sender's subject,
 subject variants, body, and CV together under `profiles/<email>/`:
 
 ```csv
 id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath
-1,sender01@gmail.com,app password,cc@example.com,profiles/sender01@gmail.com/Sender01_Resume.docx,,profiles/sender01@gmail.com/subject.txt,profiles/sender01@gmail.com/subject-variants.txt,profiles/sender01@gmail.com/body.txt
-2,sender02@gmail.com,app password,cc@example.com,profiles/sender02@gmail.com/Sender02_Resume.docx,GC - ,profiles/sender02@gmail.com/subject.txt,profiles/sender02@gmail.com/subject-variants.txt,profiles/sender02@gmail.com/body.txt
+1,rajhasakket135@gmail.com,,kbmahesh72@gmail.com,profiles/rajhasakket135@gmail.com/CV_Raja_Saketh_Garige.docx,,profiles/rajhasakket135@gmail.com/subject.txt,profiles/rajhasakket135@gmail.com/subject-variants.txt,profiles/rajhasakket135@gmail.com/body.txt
 ```
 
 For 50 Gmail accounts, use numeric ids `1`, `2`, `3`, etc. Pending workbook rows are sent round-robin across all configured accounts. Each row owns its sender Gmail, app password, optional CC email, CV attachment path, subject prefix, subject file, subject variants file, and body file. Leave `ccEmail` blank to send without CC. Use explicit `profiles/<email>/...` paths to keep each profile self-contained. Simple filenames are still resolved under `templates/subjects/` and `templates/body/` for backward compatibility. App passwords can also be supplied as environment variables using `gmail.account-password-env-prefix`, for example `GMAIL_APP_PASSWORD_1`.
 
 Inside each `profiles/<email>/` folder, use `subject.txt`, `subject-variants.txt`, and `body.txt`; keep that
-sender's CV in the same folder. To prepend `GC - ` for Surya, set `subjectPrefix` to `GC - ` in that CSV row.
+sender's CV in the same folder. Account CSV files are ignored by Git because they may contain Gmail app
+passwords. For an environment-variable-only setup, leave `appPassword` blank and set `GMAIL_APP_PASSWORD_1`.
+If the configured attachment filename is renamed or missing, the sender automatically uses the first `.docx`
+or `.pdf` file found in that same profile folder.
 
 For a small sender list, `email.accounts=1,2` and `email.account.<id>.*` properties are still supported when `email.accounts.file` is blank, including `email.account.<id>.cc.email` and `email.account.<id>.attachment.path`.
 
@@ -126,7 +131,7 @@ Standalone email sender command, if you want to send pending emails without runn
 java -cp target\linkedin-email-extractor-1.0.0.jar com.kbmah.linkedin.PendingEmailSenderApplication
 ```
 
-This standalone sender keeps running. It checks the daily workbook every `interval-minutes` value, which is 10 seconds in the default `application.properties`.
+This standalone sender keeps running. It checks the daily workbook every `interval-minutes` value, which is two minutes in the default `application.properties`.
 Use `--run-once` only when you want a single check and then exit.
 
 ## Logging

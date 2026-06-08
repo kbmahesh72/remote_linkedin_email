@@ -111,6 +111,7 @@ final class EmailExtractor {
 
     List<Lead> collect(AppConfig config, Path profileDir) {
         List<Lead> collectedLeads;
+        ChromiumProcessCleaner.closeProcessesForProfile(profileDir);
         try (Playwright playwright = Playwright.create()) {
             BrowserType.LaunchPersistentContextOptions launchOptions =
                     new BrowserType.LaunchPersistentContextOptions()
@@ -129,8 +130,9 @@ final class EmailExtractor {
                 collectedLeads = collectLeadsFromFeed(config, page);
             } finally {
                 closeQuietly(context);
-                ChromiumProcessCleaner.closeProcessesForProfile(profileDir);
             }
+        } finally {
+            ChromiumProcessCleaner.closeProcessesForProfile(profileDir);
         }
         LOGGER.info("LinkedIn browser closed after extracting {} emails.", collectedLeads.size());
         return collectedLeads;
