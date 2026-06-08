@@ -1,3 +1,0 @@
-id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath
-1,sender01@gmail.com,your app password,cc@example.com,resume/Sender01_Resume.docx,,sender01@gmail.com.txt,sender01@gmail.com.variants.txt,sender01@gmail.com.txt
-2,sender02@gmail.com,your app password,cc@example.com,resume/Sender02_Resume.docx,GC - ,sender02@gmail.com.txt,sender02@gmail.com.variants.txt,sender02@gmail.com.txt

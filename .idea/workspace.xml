@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cb56919-a024-4753-bdbf-d014559467e5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailExtractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/EmailSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/LinkedInEmailExtractorApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/LinkedInEmailExtractorApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/PendingEmailSenderApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kbmah/linkedin/PendingEmailSenderApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/kbmah/linkedin/LinkedInEmailExtractorApplicationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/kbmah/linkedin/LinkedInEmailExtractorApplicationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/backup.csv" beforeDir="false" afterPath="$PROJECT_DIR$/config/backup.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/email-accounts.example.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/marketing/linkedin_email_extractor_poster.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/marketing/linkedin_email_extractor_whatsapp.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/marketing/rechout_to_recruiters_poster.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/marketing/rechout_to_recruiters_whatsapp.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/body/default.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/subjects/default.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,23 +27,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000000007409011" />
-      <entry key="MS500" value="1.0149262958809755" />
-      <entry key="S2" value="1.3495328608319261" />
-      <entry key="S5" value="1.656742625191293" />
-      <entry key="S10" value="1.8103965851305723" />
-      <entry key="S30" value="1.9323218608494652" />
-      <entry key="S60" value="1.9655917782339825" />
-      <entry key="M2" value="1.9895062904968697" />
-      <entry key="M5" value="2.19998343680003" />
-      <entry key="M10" value="2.653933447401452" />
-      <entry key="M15" value="2.995455185531325" />
-      <entry key="M30" value="3.6121517902752682" />
-      <entry key="H1" value="4.147923462702261" />
-      <entry key="H2" value="4.527534894584551" />
-      <entry key="H4" value="5.284949140668574" />
-      <entry key="D1" value="47.76830287738995" />
-      <entry key="W1" value="114.43789880339641" />
+      <entry key="MS100" value="1.0921418261489617" />
+      <entry key="MS500" value="1.6299787027897041" />
+      <entry key="S2" value="2.197860667292157" />
+      <entry key="S5" value="2.5795892969075966" />
+      <entry key="S10" value="2.7677395960627855" />
+      <entry key="S30" value="2.917024470323082" />
+      <entry key="S60" value="2.9577959311242226" />
+      <entry key="M2" value="2.985557022832536" />
+      <entry key="M5" value="3.198235565380892" />
+      <entry key="M10" value="3.652878972156302" />
+      <entry key="M15" value="3.9946616859684543" />
+      <entry key="M30" value="4.611673326981403" />
+      <entry key="H1" value="5.1476487379726645" />
+      <entry key="H2" value="5.527384958549478" />
+      <entry key="H4" value="6.284861630478296" />
+      <entry key="D1" value="48.76817104887077" />
+      <entry key="W1" value="115.43785368622017" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -54,35 +53,35 @@
       <entry key="S10" value="0.0" />
       <entry key="S30" value="0.0" />
       <entry key="S60" value="0.0" />
-      <entry key="M2" value="1.99525429948863E-226" />
-      <entry key="M5" value="7.954517068810773E-91" />
-      <entry key="M10" value="1.2613085120794018E-45" />
-      <entry key="M15" value="1.470812867593301E-30" />
-      <entry key="M30" value="1.7151165738226288E-15" />
-      <entry key="H1" value="5.856819011230577E-8" />
-      <entry key="H2" value="3.422519219098071E-4" />
-      <entry key="H4" value="0.026163024302325866" />
-      <entry key="D1" value="0.9708220989694253" />
-      <entry key="W1" value="1.8038005633881358" />
+      <entry key="M2" value="1.991293621744241E-226" />
+      <entry key="M5" value="7.948197260759015E-91" />
+      <entry key="M10" value="1.2608073621339173E-45" />
+      <entry key="M15" value="1.47042324755387E-30" />
+      <entry key="M30" value="1.7148893905886678E-15" />
+      <entry key="H1" value="5.856431103152324E-8" />
+      <entry key="H2" value="3.42240587729649E-4" />
+      <entry key="H4" value="0.026162591085056596" />
+      <entry key="D1" value="0.970819419744249" />
+      <entry key="W1" value="1.8037998522392176" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.8827029967563162" />
-      <entry key="MS500" value="0.9889578140791438" />
-      <entry key="S2" value="1.335291157511154" />
-      <entry key="S5" value="1.648178708618496" />
-      <entry key="S10" value="1.8053948723074018" />
-      <entry key="S30" value="1.9304639145382558" />
-      <entry key="S60" value="1.9646367765019623" />
-      <entry key="M2" value="1.989021418535713" />
-      <entry key="M5" value="2.1997797804150157" />
-      <entry key="M10" value="2.6538222501787967" />
-      <entry key="M15" value="2.995376423062168" />
-      <entry key="M30" value="3.612108265361901" />
-      <entry key="H1" value="4.14789997159446" />
-      <entry key="H2" value="4.52786469092865" />
-      <entry key="H4" value="5.311103133230185" />
-      <entry key="D1" value="48.739094870432375" />
-      <entry key="W1" value="116.24168919754833" />
+      <entry key="MS100" value="0.17347569208872154" />
+      <entry key="MS500" value="1.2345734549417655" />
+      <entry key="S2" value="2.072830907232109" />
+      <entry key="S5" value="2.5248549055405456" />
+      <entry key="S10" value="2.739293500165115" />
+      <entry key="S30" value="2.907264647463536" />
+      <entry key="S60" value="2.9528785593067592" />
+      <entry key="M2" value="2.983088064269577" />
+      <entry key="M5" value="3.1972375778092275" />
+      <entry key="M10" value="3.6523704936862726" />
+      <entry key="M15" value="3.9943180432003964" />
+      <entry key="M30" value="4.611497348478992" />
+      <entry key="H1" value="5.14755901655023" />
+      <entry key="H2" value="5.527681627488286" />
+      <entry key="H4" value="6.3109986315933" />
+      <entry key="D1" value="49.73895760302225" />
+      <entry key="W1" value="117.24164297497687" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -102,6 +101,7 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
@@ -135,6 +135,16 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="linkedin_email_extractor" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="linkedin_email_extractor" />
       <method v="2">
@@ -199,6 +209,8 @@
       <workItem from="1779990224344" duration="7872000" />
       <workItem from="1780083893181" duration="5703000" />
       <workItem from="1780173503505" duration="3011000" />
+      <workItem from="1780883113273" duration="1332000" />
+      <workItem from="1780884899344" duration="1011000" />
     </task>
     <servers />
   </component>

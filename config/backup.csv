@@ -1,3 +1,3 @@
 id,username,appPassword,ccEmail,attachmentPath,subjectPrefix,subjectPath,subjectVariantsPath,bodyPath
-1,vaddemanipadmaja59@gmail.com,unlq avqv donz qcqf,vamshi.j@prnitcorp.com,resume/PadmajaVaddemani_Java.docx,,vaddemanipadmaja59@gmail.com.txt,vaddemanipadmaja59@gmail.com.variants.txt,vaddemanipadmaja59@gmail.com.txt
-2,surya.p2805@gmail.com,vubx wyap qvqo xajh,,resume/Surya_Narayana_Java.pdf,Green Card - ,surya.p2805@gmail.com.txt,surya.p2805@gmail.com.variants.txt,surya.p2805@gmail.com.txt
+1,vaddemanipadmaja59@gmail.com,unlq avqv donz qcqf,vamshi.j@prnitcorp.com,profiles/vaddemanipadmaja59@gmail.com/PadmajaVaddemani_Java.docx,,profiles/vaddemanipadmaja59@gmail.com/subject.txt,profiles/vaddemanipadmaja59@gmail.com/subject-variants.txt,profiles/vaddemanipadmaja59@gmail.com/body.txt
+2,surya.p2805@gmail.com,vubx wyap qvqo xajh,,profiles/surya.p2805@gmail.com/Surya_Narayana_Java.pdf,Green Card - ,profiles/surya.p2805@gmail.com/subject.txt,profiles/surya.p2805@gmail.com/subject-variants.txt,profiles/surya.p2805@gmail.com/body.txt
