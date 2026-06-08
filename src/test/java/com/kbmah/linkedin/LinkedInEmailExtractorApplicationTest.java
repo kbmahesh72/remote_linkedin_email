@@ -30,7 +30,8 @@ class LinkedInEmailExtractorApplicationTest {
 
         assertEquals(Path.of("playwright-profile"), config.profileDir());
         assertEquals(Path.of("automation-output"), config.outputDir());
-        assertEquals(7.0, config.intervalMinutes());
+        assertEquals(2.0, config.intervalMinutes());
+        assertTrue(config.browserConfig().headless());
         assertEquals(List.of("Hiring Java C2C Remote", "Hiring Java W2 Remote"), config.queries());
         assertEquals("Hiring Java C2C Remote", config.query());
     }

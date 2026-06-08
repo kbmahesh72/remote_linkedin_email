@@ -6,7 +6,8 @@ Java automation that searches LinkedIn posts, expands post text, extracts email 
 
 - Java 17
 - Maven
-- A logged-in Chromium Playwright profile, stored at `playwright-profile` by default
+- A logged-in Chromium Playwright profile, stored at `playwright-profile` by default, or LinkedIn credentials in
+  the configured `LINKEDIN_EMAIL` and `LINKEDIN_PASSWORD` environment variables
 
 ## Run
 
@@ -25,6 +26,8 @@ java -jar target\linkedin-email-extractor-1.0.0.jar
 All runtime settings live in the root-level `application.properties`. By default, the automation writes to
 `automation-output\YYYYMMDD.xlsx` and sends pending emails from the daily workbook.
 Duplicate emails are skipped within the same daily workbook, and the automation keeps running.
+Chromium runs headlessly by default (`browser.headless=true`), so no browser window is displayed. Manual login
+is unavailable in this mode; use the saved authenticated profile or the configured credential environment variables.
 
 Configure separate LinkedIn searches as a comma-separated ordered list:
 

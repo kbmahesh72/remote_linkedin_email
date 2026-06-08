@@ -371,6 +371,15 @@ final class EmailExtractor {
             return;
         }
 
+        if (browserConfig.headless()) {
+            throw new IllegalStateException(
+                    "LinkedIn login is required, but Chromium is running headlessly. "
+                            + "Use an authenticated profile or set "
+                            + browserConfig.linkedinEmailEnvVar() + " and "
+                            + browserConfig.linkedinPasswordEnvVar() + "."
+            );
+        }
+
         waitForManualLogin(page, config.loginTimeoutSeconds(), browserConfig);
         if (isLoginPage(page, browserConfig)) {
             throw new IllegalStateException("LinkedIn login is still required. Please complete sign-in and rerun the app.");
